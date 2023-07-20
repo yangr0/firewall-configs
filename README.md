@@ -4,15 +4,16 @@ These are the firewalls configs I have for my VPS
 
 ENJOYY!!!!!!!
 
-## IPv4 Rules
+<details>
+<summary><h1>IPv4 Rules</h1></summary>
 
 ```
 ### DDOS Protection Rules
 
-###
+##################
 Consider backing up and flushing iptables before doing this
 Actually read the rules before you apply them and change ports/limits to your liking
-###
+####################
 
 # /etc/sysct.conf configs
 net.ipv4.conf.default.rp_filter=1
@@ -59,6 +60,20 @@ sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 # drop packets by default
 sudo iptables -P INPUT DROP
 
+
+###################
+# DOCKER IPTABLES #
+###################
+
+# Only accept connections from host machine (for caddy reverse proxy setup)
+sudo iptables -I DOCKER-USER ! -s <HOST-PRIVATE-IP> -j DROP
+
+# allow related and established connections
+sudo iptables -A DOCKER-USER -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# Make sure iptables is enabled in /etc/docker/daemon.json
+{"iptables": true}
+
 # Credits
 # I took a lot of these rules from these articles and tweaked some of them
 https://www.webhostingtalk.com/showthread.php?t=1366995
@@ -66,6 +81,10 @@ https://www.cyberciti.biz/tips/linux-iptables-10-how-to-block-common-attack.html
 https://gist.github.com/mattia-beta/bd5b1c68e3d51db933181d8a3dc0ba64
 ```
 
+</details>
+
+<details>
+<summary><h1>IPv6 Rules</h1></summary>
 ## IPv6 Rules
 
 ```
@@ -127,3 +146,5 @@ https://www.webhostingtalk.com/showthread.php?t=1366995
 https://www.cyberciti.biz/tips/linux-ip6tables-10-how-to-block-common-attack.html
 https://gist.github.com/mattia-beta/bd5b1c68e3d51db933181d8a3dc0ba64
 ```
+
+</details>

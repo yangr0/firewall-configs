@@ -1,9 +1,9 @@
 ### DDOS Protection Rules
 
-###
+##################
 Consider backing up and flushing iptables before doing this
 Actually read the rules before you apply them and change ports/limits to your liking
-###
+####################
 
 # /etc/sysct.conf configs
 net.ipv4.conf.default.rp_filter=1
@@ -49,6 +49,20 @@ sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 # drop packets by default
 sudo iptables -P INPUT DROP
+
+
+###################
+# DOCKER IPTABLES #
+###################
+
+# Only accept connections from host machine (for caddy reverse proxy setup)
+sudo iptables -I DOCKER-USER ! -s <HOST-PRIVATE-IP> -j DROP
+
+# allow related and established connections
+sudo iptables -A DOCKER-USER -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# Make sure iptables is enabled in /etc/docker/daemon.json
+{"iptables": true}
 
 # Credits
 # I took a lot of these rules from these articles and tweaked some of them
