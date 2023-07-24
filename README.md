@@ -15,6 +15,15 @@ Consider backing up and flushing iptables before doing this
 Actually read the rules before you apply them and change ports/limits to your liking
 ####################
 
+# Flush tables (if you want)
+sudo iptables -P INPUT ACCEPT
+sudo iptables -P FORWARD ACCEPT
+sudo iptables -P OUTPUT ACCEPT
+sudo iptables -t nat -F
+sudo iptables -t mangle -F
+sudo iptables -F
+sudo iptables -X
+
 # /etc/sysct.conf configs
 net.ipv4.conf.default.rp_filter=1
 net.ipv4.conf.all.rp_filter=1
@@ -40,19 +49,16 @@ sudo iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
 sudo iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
 
 # limit syn packets per IP (connection attacks)
-sudo iptables -A INPUT -p tcp --syn -m multiport --dports 2200,443,22,23 -m limit --limit 10/second --limit-burst 20 -j ACCEPT
+sudo iptables -A INPUT -p tcp --syn -m multiport --dports 2200,443,22 -m limit --limit 10/second --limit-burst 20 -j ACCEPT
 
 # limit udp packets per IP (udp flood)
-sudo iptables -A INPUT -p udp -m multiport --dports 2200,443,22,23 -m limit --limit 15/second --limit-burst 50 -j ACCEPT
+sudo iptables -A INPUT -p udp -m multiport --dports 2200,443,22 -m limit --limit 15/second --limit-burst 50 -j ACCEPT
 
 # limit icmp echo-request per IP (ping flood)
 sudo iptables -I INPUT 7 -p icmp --icmp-type 8 -m limit --limit 1/second --limit-burst 3 -j ACCEPT
 
 # allow traffic on these ports (my public services)
-sudo iptables -A INPUT -p tcp --dport 2200 -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport 23 -j ACCEPT
+sudo iptables -A INPUT -p tcp -m multiport --dports 2200,443,22 -j ACCEPT
 
 # allow related and established connections
 sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
@@ -85,7 +91,6 @@ https://gist.github.com/mattia-beta/bd5b1c68e3d51db933181d8a3dc0ba64
 
 <details>
 <summary><h1>IPv6 Rules</h1></summary>
-## IPv6 Rules
 
 ```
 ### DDOS Protection Rules
@@ -94,6 +99,15 @@ https://gist.github.com/mattia-beta/bd5b1c68e3d51db933181d8a3dc0ba64
 Consider backing up and flushing ip6tables before doing this
 Actually read the rules before you apply them and change ports/limits to your liking
 ###
+
+# Flush tables (if you want)
+sudo ip6tables -P INPUT ACCEPT
+sudo ip6tables -P FORWARD ACCEPT
+sudo ip6tables -P OUTPUT ACCEPT
+sudo ip6tables -t nat -F
+sudo ip6tables -t mangle -F
+sudo ip6tables -F
+sudo ip6tables -X
 
 # /etc/sysct.conf configs
 net.ipv4.conf.default.rp_filter=1
@@ -120,19 +134,16 @@ sudo ip6tables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
 sudo ip6tables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
 
 # limit syn packets per IP (connection attacks)
-sudo ip6tables -A INPUT -p tcp --syn -m multiport --dports 2200,443,22,23 -m limit --limit 10/second --limit-burst 20 -j ACCEPT
+sudo ip6tables -A INPUT -p tcp --syn -m multiport --dports 2200,443,22 -m limit --limit 10/second --limit-burst 20 -j ACCEPT
 
 # limit udp packets per IP (udp flood)
-sudo ip6tables -A INPUT -p udp -m multiport --dports 2200,443,22,23 -m limit --limit 15/second --limit-burst 50 -j ACCEPT
+sudo ip6tables -A INPUT -p udp -m multiport --dports 2200,443,22 -m limit --limit 15/second --limit-burst 50 -j ACCEPT
 
 # limit icmp echo-request per IP (ping flood)
 sudo ip6tables -I INPUT 7 -p icmpv6 --icmpv6-type 8 -m limit --limit 1/second --limit-burst 3 -j ACCEPT
 
 # allow traffic on these ports (my public services)
-sudo ip6tables -A INPUT -p tcp --dport 2200 -j ACCEPT
-sudo ip6tables -A INPUT -p tcp --dport 443 -j ACCEPT
-sudo ip6tables -A INPUT -p tcp --dport 22 -j ACCEPT
-sudo ip6tables -A INPUT -p tcp --dport 23 -j ACCEPT
+sudo ip6tables -A INPUT -p tcp -m multiport --dports 2200,443,22 -j ACCEPT
 
 # allow related and established connections
 sudo ip6tables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
