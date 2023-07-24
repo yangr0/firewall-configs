@@ -53,16 +53,13 @@ sudo iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
 sudo iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
 
 # limit syn packets per IP (connection attacks)
-sudo iptables -A INPUT -p tcp --syn -m multiport --dports 2200,443,22 -m limit --limit 8/second --limit-burst 5 -j ACCEPT
+sudo iptables -A INPUT -p tcp --syn -m multiport --dports 2200,443,22,21,8388 -m limit --limit 8/second --limit-burst 5 -j ACCEPT
 
 # limit udp packets per IP (udp flood)
-sudo iptables -A INPUT -p udp -m multiport --dports 2200,443,22 -m limit --limit 15/second --limit-burst 10 -j ACCEPT
+sudo iptables -A INPUT -p udp -m multiport --dports 51820,443,8388 -m limit --limit 50/second --limit-burst 10 -j ACCEPT
 
 # limit icmp echo-request per IP (ping flood)
-sudo iptables -I INPUT 7 -p icmp --icmp-type 8 -m limit --limit 1/second --limit-burst 3 -j ACCEPT
-
-# allow traffic on these ports (my public services)
-sudo iptables -A INPUT -p tcp -m multiport --dports 2200,443,22 -j ACCEPT
+sudo iptables -A INPUT -p icmp --icmp-type 8 -m limit --limit 1/second --limit-burst 3 -j ACCEPT
 
 # allow related and established connections
 sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
@@ -142,16 +139,13 @@ sudo ip6tables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
 sudo ip6tables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
 
 # limit syn packets per IP (connection attacks)
-sudo ip6tables -A INPUT -p tcp --syn -m multiport --dports 2200,443,22,21 -m limit --limit 8/second --limit-burst 5 -j ACCEPT
+sudo ip6tables -A INPUT -p tcp --syn -m multiport --dports 2200,443,22,21,8388 -m limit --limit 8/second --limit-burst 5 -j ACCEPT
 
 # limit udp packets per IP (udp flood)
-sudo ip6tables -A INPUT -p udp -m multiport --dports 2200,443,22,21 -m limit --limit 15/second --limit-burst 10 -j ACCEPT
+sudo ip6tables -A INPUT -p udp -m multiport --dports 51820,443,8388 -m limit --limit 50/second --limit-burst 10 -j ACCEPT
 
 # limit icmp echo-request per IP (ping flood)
 sudo ip6tables -I INPUT 7 -p icmpv6 --icmpv6-type 8 -m limit --limit 1/second --limit-burst 3 -j ACCEPT
-
-# allow traffic on these ports (my public services)
-sudo ip6tables -A INPUT -p tcp -m multiport --dports 2200,443,22 -j ACCEPT
 
 # allow related and established connections
 sudo ip6tables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
