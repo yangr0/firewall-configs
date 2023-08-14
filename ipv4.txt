@@ -63,10 +63,9 @@ sudo iptables -P INPUT DROP
 ###################
 
 # Only accept connections from host machine (for caddy reverse proxy setup)
-sudo iptables -I DOCKER-USER ! -s <HOST-PRIVATE-IP> -j DROP
-
-# allow related and established connections
-sudo iptables -A DOCKER-USER -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -I DOCKER-USER -j DROP
+sudo iptables -I DOCKER-USER -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -I DOCKER-USER -s 172.23.0.1,172.23.0.3 -j ACCEPT
 
 # Make sure iptables is enabled in /etc/docker/daemon.json
 {"iptables": true}
