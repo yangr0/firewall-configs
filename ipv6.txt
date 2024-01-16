@@ -43,7 +43,7 @@ sudo ip6tables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
 sudo ip6tables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
 
 # limit syn packets per IP (connection attacks)
-sudo ip6tables -A INPUT -p tcp --syn -m multiport --dports 2200,443,22,21,8388 -m limit --limit 8/second --limit-burst 5 -j ACCEPT
+sudo ip6tables -A INPUT -p tcp --syn -m multiport --dports 2200,443,22,21,8388,25565 -m limit --limit 8/second --limit-burst 5 -j ACCEPT
 
 # limit udp packets per IP (udp flood)
 sudo ip6tables -A INPUT -p udp -m multiport --dports 51820,443,8388 -m limit --limit 50/second --limit-burst 10 -j ACCEPT
