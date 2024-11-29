@@ -14,7 +14,7 @@ sudo ip6tables -t mangle -F
 sudo ip6tables -F
 sudo ip6tables -X
 
-# /etc/sysct.conf configs
+# /etc/sysctl.conf configs
 net.ipv4.conf.default.rp_filter=1
 net.ipv4.conf.all.rp_filter=1
 net.ipv4.tcp_syncookies=1
@@ -56,6 +56,12 @@ sudo ip6tables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 # drop packets by default
 sudo ip6tables -P INPUT DROP
+
+#################
+# SAVE IPTABLES #
+#################
+
+sudo netfilter-persistent save
 
 # Credits
 # I took a lot of these rules from these articles and tweaked some of them

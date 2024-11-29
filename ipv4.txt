@@ -14,7 +14,7 @@ sudo iptables -t mangle -F
 sudo iptables -F
 sudo iptables -X
 
-# /etc/sysct.conf configs
+# /etc/sysctl.conf configs
 net.ipv4.conf.default.rp_filter=1
 net.ipv4.conf.all.rp_filter=1
 net.ipv4.tcp_syncookies=1
@@ -43,7 +43,7 @@ sudo iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
 sudo iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
 
 # limit syn packets per IP (connection attacks)
-sudo iptables -A INPUT -p tcp --syn -m multiport --dports 2200,443,22,21,8388,25565 -m limit --limit 8/second --limit-burst 5 -j ACCEPT
+sudo iptables -A INPUT -p tcp --syn -m multiport --dports 80,2200,443,22,21,8388,25565 -m limit --limit 8/second --limit-burst 5 -j ACCEPT
 
 # limit udp packets per IP (udp flood)
 sudo iptables -A INPUT -p udp -m multiport --dports 51820,443,8388 -m limit --limit 50/second --limit-burst 10 -j ACCEPT
@@ -69,6 +69,12 @@ sudo iptables -I DOCKER-USER -s 172.23.0.1,172.23.0.3 -j ACCEPT
 
 # Make sure iptables is enabled in /etc/docker/daemon.json
 {"iptables": true}
+
+#################
+# SAVE IPTABLES #
+#################
+
+sudo netfilter-persistent save
 
 # Credits
 # I took a lot of these rules from these articles and tweaked some of them
