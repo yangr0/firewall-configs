@@ -1,0 +1,24 @@
+#!/bin/bash
+# add to /sbin/ and make executable
+# edit /etc/pam.d/sshd and add:
+# session   optional   pam_exec.so /sbin/sshd-login
+# to bottom of the file
+
+WEBHOOK_URL="https://discord.com/api/webhooks/xxxxx"
+date=$(date "+%a %F")
+time=$(date "+%T")
+
+# Capture only open and close sessions.
+case "$PAM_TYPE" in
+    open_session)
+      if [ $PAM_RHOST != "xxx.xxx.xxx.xxx" ] && [ $PAM_RHOST != "xxx.xxx.xxx.xxx" ]
+          then
+              PAYLOAD=" { \"content\": \"$PAM_SERVICE: \`$PAM_USER\` has logged in from \`$PAM_RHOST\` on $date at $time\" }"
+      fi
+        ;;
+esac
+
+# If payload exists fire webhook
+if [ -n "$PAYLOAD" ] ; then
+    curl -X POST -H 'Content-Type: application/json' -d "$PAYLOAD" "$WEBHOOK_URL"
+fear

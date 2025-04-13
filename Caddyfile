@@ -1,0 +1,189 @@
+########
+# root #
+########
+https://domainname {
+	log {
+		level INFO
+		output file /var/log/caddy/root.log {
+			roll_size 10MB
+			roll_keep 10
+		}
+	}
+	tls xxx@somethingmail.com
+	reverse_proxy localhost:8000
+}
+
+
+#########
+# Homer #
+#########
+https://home.domainname {
+	log {
+		level INFO
+		output file /var/log/caddy/homer.log {
+			roll_size 10MB
+			roll_keep 10
+		}
+	}
+	tls xxx@somethingmail.com
+	reverse_proxy localhost:3000
+}
+
+###############
+# Vaultwarden #
+###############
+
+# Uncomment this in addition with the import admin_redir statement allow access to the admin interface only from local networks
+# (admin_redir) {
+#        @admin {
+#                path /admin*
+#                not remote_ip private_ranges
+#        }
+#        redir @admin /
+# }
+https://warden.domainname {
+	log {
+		level INFO
+		output file /var/log/caddy/vaultwarden.log {
+			roll_size 10MB
+			roll_keep 10
+		}
+	}
+	# Uncomment this if you want to get a cert via ACME (Let's Encrypt or ZeroSSL).
+	tls xxx@somethingmail.com
+	# Or uncomment this if you're providing your own cert. You would also use this option
+	# if you're running behind Cloudflare.
+	# tls {$SSL_CERT_PATH} {$SSL_KEY_PATH}
+	# This setting may have compatibility issues with some browsers
+	# (e.g., attachment downloading on Firefox). Try disabling this
+	# if you encounter issues.
+	encode gzip
+	# Uncomment to improve security (WARNING: only use if you understand the implications!)
+	# If you want to use FIDO2 WebAuthn, set X-Frame-Options to "SAMEORIGIN" or the Browser will block those requests
+	# header {
+	#      # Enable HTTP Strict Transport Security (HSTS)
+	#      Strict-Transport-Security "max-age=31536000;"
+	#      # Enable cross-site filter (XSS) and tell browser to block detected attacks
+	#      X-XSS-Protection "1; mode=block"
+	#      # Disallow the site to be rendered within a frame (clickjacking protection)
+	#      X-Frame-Options "SAMEORIGIN"
+	#      # Prevent search engines from indexing (optional)
+	#      X-Robots-Tag "none"
+	#      # Server name removing
+	#      -Server
+	# }
+	# Uncomment to allow access to the admin interface only from local networks
+	# import admin_redir
+
+	# Proxy everything to Rocket
+	# if located at a sub-path the reverse_proxy line will look like:
+	#   reverse_proxy /subpath/* <SERVER>:80
+	reverse_proxy localhost:8008 #{
+	#header_up X-Real-IP {remote_host}
+	#}
+}
+
+###############
+# Uptime-Kuma #
+###############
+https://kuma.domainname {
+	log {
+		level INFO
+		output file /var/log/caddy/uptime-kuma.log {
+			roll_size 10MB
+			roll_keep 10
+		}
+	}
+	tls xxx@somethingmail.com
+	reverse_proxy localhost:3001
+}
+
+#############
+# CyberChef #
+#############
+https://cyberchef.domainname {
+	log {
+		level INFO
+		output file /var/log/caddy/cyberchef.log {
+			roll_size 10MB
+			roll_keep 10
+		}
+	}
+	tls xxx@somethingmail.com
+	reverse_proxy localhost:8080
+}
+
+###############
+# filebrowser #
+###############
+https://file.domainname {
+	log {
+		level INFO
+		output file /var/log/caddy/filebrowser.log {
+			roll_size 10MB
+			roll_keep 10
+		}
+	}
+	tls xxx@somethingmail.com
+	reverse_proxy localhost:8081
+}
+
+################
+# explainshell #
+################
+https://explain.domainname {
+	log {
+		level INFO
+		output file /var/log/caddy/explainshell.log {
+			roll_size 10MB
+			roll_keep 10
+		}
+	}
+	tls xxx@somethingmail.com
+	reverse_proxy localhost:5000
+}
+
+###################
+# markdown-editor #
+###################
+https://md.domainname {
+	log {
+		level INFO
+		output file /var/log/caddy/markdown-editor.log {
+			roll_size 10MB
+			roll_keep 10
+		}
+	}
+	tls xxx@somethingmail.com
+	reverse_proxy localhost:8082
+}
+
+##############
+# minecraft #
+##############
+https://minecraft.domainname {
+	log {
+		level INFO
+		output file /var/log/caddy/minecraft.log {
+			roll_size 10MB
+			roll_keep 10
+		}
+	}
+	tls xxx@somethingmail.com
+	reverse_proxy localhost:25565
+}
+
+##########
+# wakapi #
+##########
+https://wakapi.domainname {
+	log {
+		level INFO
+		output file /var/log/caddy/wakapi.log {
+			roll_size 10MB
+			roll_keep 10
+		}
+	}
+	tls xxx@somethingmail.com
+	reverse_proxy localhost:3002
+}
